@@ -9,3 +9,6 @@
 6. react native element dropdown: latest best and optimzed dropdown i haved used
 7. zod: never used before but its make my work ez for validation, and In future i will use in every program of mine
 8. date-fns for date and time convertion its perfect lib rather than write core code.
+
+
+# node 18
