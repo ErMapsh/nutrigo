@@ -1,14 +1,8 @@
 import React from 'react';
-import {
-  SafeAreaView,
-  StatusBar,
-  StyleSheet,
-  Text,
-} from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import {StatusBar, StyleSheet, Text} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
 import Stack from './src/routes/Stack';
-
-
+import Themeprovider from './src/utils/Themeprovider';
 
 function App(): React.JSX.Element {
   return (

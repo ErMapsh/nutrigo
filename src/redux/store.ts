@@ -1,10 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit'
-import commonSlice from './commonSlice'
+import mealsSlice from './mealsSlice'
 
 export const makeStore = () => {
     return configureStore({
         reducer: {
-            common: commonSlice
+            meals: mealsSlice
         },
     })
 }
