@@ -29,32 +29,9 @@ import {
   setOpen,
   updateMealTime,
   updateMenuOption,
+  verify,
 } from '../redux/mealsSlice';
-import {z} from 'zod';
-
-const menuOptionSchema = z.object({
-  id: z.number(),
-  meal_id: z.number(),
-  placeholder: z.string(),
-  value: z.string().min(1, {message: 'Menu option cannot be empty'}),
-  valid: z.boolean(),
-});
-
-const mealSchema = z.object({
-  id: z.number(),
-  name: z.string(),
-  required: z.boolean(),
-  time: z
-    .string()
-    .min(1, {message: 'Time cannot be empty for required meals'})
-    .optional(),
-  open: z.boolean(),
-  opendate: z.boolean(),
-  menu_options: z.array(menuOptionSchema),
-  valid: z.boolean(),
-});
-
-const mealsSchema = z.array(mealSchema);
+import {ALERT_TYPE, Toast} from 'react-native-alert-notification';
 
 function FoodDetails({theme, navigation}: any) {
   const dispatch = useDispatch();
@@ -342,9 +319,18 @@ function FoodDetails({theme, navigation}: any) {
 
   const onSubmit = () => {
     try {
-      if (!submitError) {
-        navigation.navigate('WorkoutMeal');
-      }
+      dispatch(verify());
+      setTimeout(() => {
+        if (submitError) {
+          Toast.show({
+            type: ALERT_TYPE.WARNING,
+            title: 'Warning',
+            textBody: 'Invalid data to process',
+          });
+        } else {
+          navigation.navigate('WorkoutMeal');
+        }
+      }, 1000);
     } catch (error) {}
   };
   return (

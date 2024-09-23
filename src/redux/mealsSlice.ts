@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Alert } from 'react-native';
 import { z } from 'zod';
 
 export interface menuOptiontype {
@@ -105,7 +104,7 @@ const mealOptionSchema = z.object({
     id: z.number(),
     meal_id: z.number(),
     placeholder: z.string(),
-    value: z.string().min(7, { message: 'Menu option cannot be empty' }),
+    value: z.string().min(3, { message: 'Menu option cannot be empty' }),
 })
 
 
@@ -261,11 +260,21 @@ const mealsSlice = createSlice({
             }
 
         },
+        verify: (state) => {
+            const validationResult = mealsSchema.safeParse(state.meals);
+
+            if (!validationResult.success) {
+                console.log(validationResult.error.errors);
+                state.submitError = true;
+            } else {
+                state.submitError = false;
+            }
+        }
     },
 });
 
 
 
-export const { setOpen, setHandleOpenDate, updateMealTime, updateMenuOption, AddmoreMenuOption } = mealsSlice.actions;
+export const { setOpen, setHandleOpenDate, updateMealTime, updateMenuOption, AddmoreMenuOption, verify } = mealsSlice.actions;
 
 export default mealsSlice.reducer;
