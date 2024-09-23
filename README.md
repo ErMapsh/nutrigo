@@ -9,7 +9,7 @@
 6. react native element dropdown: the latest best and optimized dropdown I have used
 7. Zod: never used it before but its makes my work easier for validation, and In the future, i will use it in every program of mine
 8. date-fns for date and time conversion is perfect lib rather than writing core code.
-9. react-native-alert-notification: give application reach look and UI experience
+9. react-native-alert-notification: give application rich look and UI experience
 
 # node 18
 
