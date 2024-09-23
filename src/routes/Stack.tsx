@@ -7,7 +7,7 @@ const stack = createNativeStackNavigator();
 
 function Stack() {
     return (
-        <stack.Navigator initialRouteName='WorkoutMeal'>
+        <stack.Navigator initialRouteName='FoodDetails'>
             <stack.Screen
                 name="FoodDetails"
                 component={FoodDetails}
