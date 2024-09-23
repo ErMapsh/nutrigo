@@ -23,24 +23,13 @@ import {ALERT_TYPE, Toast} from 'react-native-alert-notification';
 
 const beforeworkoutPlanSchema = z.object({
   beforeworktime: z.string().min(1, 'Before workout time is required'),
-  beforeworkoutmeal: z.string().min(4, 'Before workout meal is required'),
+  beforeworkoutmeal: z.string().min(1, 'Before workout meal is required'),
 });
 
 const afterworkoutPlanSchema = z.object({
   afterworkouttime: z.string().min(1, 'After workout time is required'),
-  afterworkoutmeal: z.string().min(4, 'After workout meal is required'),
+  afterworkoutmeal: z.string().min(1, 'After workout meal is required'),
 });
-
-interface datatype {
-  value: string;
-  label: string;
-}
-
-const OPTIONS = [
-  {label: 'Male', value: 'male'},
-  {label: 'Female', value: 'female'},
-  {label: 'Other', value: 'other'},
-];
 
 function WorkoutMeal({navigation, theme}: any) {
   const [id, setid] = useState<number>(0);
@@ -62,8 +51,6 @@ function WorkoutMeal({navigation, theme}: any) {
       label: 'Both',
     },
   ];
-
-  const [openTime, setopenTime] = useState(false);
 
   const [openbeforetime, setopenbeforetime] = useState(false);
   const [beforeworktime, setbeforeworktime] = useState('');
@@ -90,53 +77,74 @@ function WorkoutMeal({navigation, theme}: any) {
   };
 
   const handleBefore = (date: Date) => {
-    try {
-      const time: string = to12Hr(date);
-      setbeforeworktime(time);
-    } catch (error) {}
+    const time: string = to12Hr(date);
+    setbeforeworktime(time);
   };
 
   const handleAfter = (date: Date) => {
-    try {
-      const time: string = to12Hr(date);
-      setafterworkoutime(time);
-    } catch (error) {}
+    const time: string = to12Hr(date);
+    setafterworkoutime(time);
   };
 
   const validate_Submit = async () => {
     try {
-      const validationResult = beforeworkoutPlanSchema.safeParse({
+      const beforeValidationResult = beforeworkoutPlanSchema.safeParse({
         beforeworktime,
         beforeworkoutmeal,
       });
 
-      const validation_result = afterworkoutPlanSchema.safeParse({
+      const afterValidationResult = afterworkoutPlanSchema.safeParse({
+        afterworkouttime: afterworkoutime,
+        afterworkoutmeal: afterwrokoutmeal,
+      });
+      console.log(
+        id,
+        beforeworktime,
+        beforeworkoutmeal,
         afterworkoutime,
         afterwrokoutmeal,
-      });
-      
-      console.log('id', id, !validationResult, !validation_result.success);
-      if (
-        (id == 2 && !validationResult.success) ||
-        (id == 3 && !validation_result.success) ||
-        (id == 4 &&
-          (!validationResult.success || !validation_result.success)) ||
-        id == 0
-      ) {
+        beforeValidationResult.success,
+        afterValidationResult.success,
+      );
+
+      if (id === 0) {
         Toast.show({
           type: ALERT_TYPE.WARNING,
           title: 'Warning',
-          textBody: 'Invalid data to process',
+          textBody: 'Please select an option',
         });
-      } else {
-        Toast.show({
-          type: ALERT_TYPE.SUCCESS,
-          title: 'Success',
-          textBody: 'successful',
-        });
+        return;
       }
-    } catch (error) {}
+
+      if ((id === 2 || id === 4) && !beforeValidationResult.success) {
+        Toast.show({
+          type: ALERT_TYPE.WARNING,
+          title: 'Warning',
+          textBody: 'Please provide valid pre-workout details',
+        });
+        return;
+      }
+
+      if ((id === 3 || id === 4) && !afterValidationResult.success) {
+        Toast.show({
+          type: ALERT_TYPE.WARNING,
+          title: 'Warning',
+          textBody: 'Please provide valid post-workout details',
+        });
+        return;
+      }
+
+      // Success toast
+      Toast.show({
+        type: ALERT_TYPE.SUCCESS,
+        title: 'Success',
+        textBody: 'Workout meal details submitted successfully',
+      });
+    } catch (error) {
+      console.log('error', error);
+    }
   };
+
   return (
     <View style={{flex: 1}}>
       <Appbar.Header

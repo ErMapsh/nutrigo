@@ -22,12 +22,16 @@ export interface mealtype {
 }
 
 export interface state {
-    submitError: boolean,
+    isLoading: boolean,
+    isSuccess: boolean,
+    isError: boolean,
     meals: mealtype[]
 }
 
 const initialState: state = {
-    submitError: false,
+    isLoading: false,
+    isSuccess: false,
+    isError: false,
     meals: [
         {
             id: 1,
@@ -176,9 +180,9 @@ const mealsSlice = createSlice({
 
                     const validation = mealsSchema.safeParse(state.meals);
                     if (validation.success) {
-                        state.submitError = false;
+                        state.isError = false;
                     } else {
-                        state.submitError = true;
+                        state.isError = true;
                     }
                 }
             }
@@ -214,9 +218,9 @@ const mealsSlice = createSlice({
                         }
                         const validation = mealsSchema.safeParse(state.meals);
                         if (validation.success) {
-                            state.submitError = false;
+                            state.isError = false;
                         } else {
-                            state.submitError = true;
+                            state.isError = true;
                         }
                     }
                 }
@@ -261,14 +265,16 @@ const mealsSlice = createSlice({
 
         },
         verify: (state) => {
+            state.isLoading = true;
             const validationResult = mealsSchema.safeParse(state.meals);
-
             if (!validationResult.success) {
                 console.log(validationResult.error.errors);
-                state.submitError = true;
+                state.isError = true;
             } else {
-                state.submitError = false;
+                state.isError = false;
+                state.isSuccess = true;
             }
+            state.isLoading = false;
         }
     },
 });

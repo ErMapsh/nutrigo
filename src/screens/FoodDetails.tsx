@@ -1,4 +1,4 @@
-import React, {memo, useState} from 'react';
+import React, {memo, useEffect, useState} from 'react';
 import {
   Text,
   TouchableOpacity,
@@ -36,7 +36,9 @@ import {ALERT_TYPE, Toast} from 'react-native-alert-notification';
 function FoodDetails({theme, navigation}: any) {
   const dispatch = useDispatch();
   const [dialog, setDialog] = useState<boolean>(false);
-  const {meals, submitError} = useSelector((state: any) => state.meals);
+  const {meals, isError, isLoading, isSuccess} = useSelector(
+    (state: any) => state.meals,
+  );
 
   const handleDate = (date: Date, meal_id: number) => {
     console.log(date, meal_id);
@@ -320,19 +322,25 @@ function FoodDetails({theme, navigation}: any) {
   const onSubmit = () => {
     try {
       dispatch(verify());
-      setTimeout(() => {
-        if (submitError) {
-          Toast.show({
-            type: ALERT_TYPE.WARNING,
-            title: 'Warning',
-            textBody: 'Invalid data to process',
-          });
-        } else {
-          navigation.navigate('WorkoutMeal');
-        }
-      }, 1000);
     } catch (error) {}
   };
+
+  useEffect(() => {
+    if (isError) {
+      Toast.show({
+        type: ALERT_TYPE.WARNING,
+        title: 'Warning',
+        textBody: 'Invalid data to process',
+      });
+    }
+
+    if (isSuccess) {
+      navigation.navigate('WorkoutMeal');
+    }
+
+    return () => {};
+  }, [isError, isSuccess]);
+
   return (
     <View style={{flex: 1}}>
       <Portal>
@@ -418,11 +426,13 @@ function FoodDetails({theme, navigation}: any) {
       </ScrollView>
       <Button
         mode="contained"
+        loading={isLoading}
+        disabled={isLoading}
         style={{width: '100%', borderRadius: 0}}
         contentStyle={{padding: 8}}
         labelStyle={{fontWeight: 'bold', fontSize: 15}}
         onPress={onSubmit}>
-        {submitError ? 'Next' : 'Submit'}
+        {isError ? 'Submit' : 'Next'}
       </Button>
     </View>
   );
